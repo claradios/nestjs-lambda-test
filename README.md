@@ -14,7 +14,7 @@ Run locally command:
 
 Deploy command:
 `serverless deploy`
-test time: (210s)
+test time: (210s) (192s)
 
 IMPORTANT: after testing remove the deployment to avoid unexpected charges:
 `serverless remove` (52s)
