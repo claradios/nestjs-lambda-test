@@ -12,7 +12,7 @@ provider:
 functions:
  get-cats: # The name of the lambda function
    # The module 'handler' is exported in the file 'src/lambda'
-   handler: src/lambda.handlerCats
+   handler: src/cats/lambda.handler
    events:
      - http:
          method: any
@@ -20,7 +20,7 @@ functions:
 
  get-dogs: # The name of the lambda function
    # The module 'handler' is exported in the file 'src/lambda'
-   handler: src/lambda.handlerDogs
+   handler: src/dogs/lambda.handler
    events:
      - http:
          method: any

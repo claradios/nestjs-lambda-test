@@ -6,7 +6,7 @@ import { eventContext } from 'aws-serverless-express/middleware';
 
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
+import { DogsModule } from './dogs.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const express = require('express');
@@ -23,7 +23,7 @@ async function bootstrapServer(): Promise<Server> {
   if (!cachedServer) {
     const expressApp = express();
     const nestApp = await NestFactory.create(
-      AppModule,
+      DogsModule,
       new ExpressAdapter(expressApp),
     );
     nestApp.use(eventContext());
@@ -33,23 +33,7 @@ async function bootstrapServer(): Promise<Server> {
   return cachedServer;
 }
 
-export const handlerCats: Handler = async (event: any, context: Context) => {
-  console.log('EVENT PATH', event.path);
-  if (event.path === '/api') {
-    event.path = '/api/';
-  }
-
-  event.path = event.path.includes('swagger-ui')
-    ? `/api${event.path}`
-    : event.path;
-  console.log(event.path);
-  // PREVIOUS CODE:  https://github.com/nestjs/swagger/issues/199
-  cachedServer = await bootstrapServer();
-  return proxy(cachedServer, event, context, 'PROMISE').promise;
-};
-
-export const handlerDogs: Handler = async (event: any, context: Context) => {
-  console.log('EVENT PATH', event.path);
+export const handler: Handler = async (event: any, context: Context) => {
   if (event.path === '/api') {
     event.path = '/api/';
   }
