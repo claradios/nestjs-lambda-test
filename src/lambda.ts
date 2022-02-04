@@ -33,7 +33,32 @@ async function bootstrapServer(): Promise<Server> {
   return cachedServer;
 }
 
-export const handler: Handler = async (event: any, context: Context) => {
+export const handlerCats: Handler = async (event: any, context: Context) => {
+  console.log('EVENT PATH', event.path);
+  if (event.path === '/api') {
+    event.path = '/api/';
+  }
+
+  event.path = event.path.includes('swagger-ui')
+    ? `/api${event.path}`
+    : event.path;
+  console.log(event.path);
+  // PREVIOUS CODE:  https://github.com/nestjs/swagger/issues/199
+  cachedServer = await bootstrapServer();
+  return proxy(cachedServer, event, context, 'PROMISE').promise;
+};
+
+export const handlerDogs: Handler = async (event: any, context: Context) => {
+  console.log('EVENT PATH', event.path);
+  if (event.path === '/api') {
+    event.path = '/api/';
+  }
+
+  event.path = event.path.includes('swagger-ui')
+    ? `/api${event.path}`
+    : event.path;
+  console.log(event.path);
+  // PREVIOUS CODE:  https://github.com/nestjs/swagger/issues/199
   cachedServer = await bootstrapServer();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
 };
