@@ -5,9 +5,6 @@ import { Server } from 'http';
 import { createServer, proxy } from 'aws-serverless-express';
 import { eventContext } from 'aws-serverless-express/middleware';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { INestApplication } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const express = require('express');
 
@@ -18,16 +15,6 @@ const express = require('express');
 const binaryMimeTypes: string[] = [];
 
 let cachedServer: Server;
-// TODO: make swagger work
-function setupSwagger(app: INestApplication) {
-  const options = new DocumentBuilder()
-    .setTitle('The Dogs API')
-    .setVersion('1.0.0')
-    .addTag('dogs')
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api-dogs', app, document);
-}
 
 async function bootstrapServer(): Promise<Server> {
   if (!cachedServer) {
@@ -37,7 +24,6 @@ async function bootstrapServer(): Promise<Server> {
       new ExpressAdapter(expressApp),
     );
     nestApp.use(eventContext());
-    setupSwagger(nestApp);
     await nestApp.init();
     cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
   }
@@ -45,14 +31,6 @@ async function bootstrapServer(): Promise<Server> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  if (event.path === 'dogs/api-dogs') {
-    event.path = '/api-dogs/';
-  }
-
-  event.path = event.path.includes('swagger-ui')
-    ? `/api-dogs${event.path.replace('/dogs', '')}`
-    : event.path;
-
   cachedServer = await bootstrapServer();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
 };

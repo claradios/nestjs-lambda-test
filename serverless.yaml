@@ -10,6 +10,12 @@ provider:
  runtime: nodejs14.x
 
 functions:
+ get-docs:
+   handler: src/documentation/main.handler
+   events:
+    - http:
+       method: any
+       path: /{any+}
  get-cats: # The name of the lambda function
    # The module 'handler' is exported in the file 'src/cats/main'
    handler: src/cats/main.handler

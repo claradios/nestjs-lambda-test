@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { CatsModule } from './cats.module';
+import { DocumentationModule } from './documentation.module';
 import { Handler, Context } from 'aws-lambda';
 import { Server } from 'http';
 import { createServer, proxy } from 'aws-serverless-express';
@@ -18,15 +18,25 @@ const express = require('express');
 const binaryMimeTypes: string[] = [];
 
 let cachedServer: Server;
+// TODO: make swagger work
+function setupSwagger(app: INestApplication) {
+  const options = new DocumentBuilder()
+    .setTitle('The Cats and Dogs API')
+    .setVersion('1.0.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('swagger', app, document);
+}
 
 async function bootstrapServer(): Promise<Server> {
   if (!cachedServer) {
     const expressApp = express();
     const nestApp = await NestFactory.create(
-      CatsModule,
+      DocumentationModule,
       new ExpressAdapter(expressApp),
     );
     nestApp.use(eventContext());
+    setupSwagger(nestApp);
     await nestApp.init();
     cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
   }
@@ -34,6 +44,12 @@ async function bootstrapServer(): Promise<Server> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
+  if (event.path === '/swagger') {
+    event.path = '/swagger/';
+  }
+
+  event.path = event.path.includes('swagger-ui') ? `/swagger/` : event.path;
+
   cachedServer = await bootstrapServer();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
 };
