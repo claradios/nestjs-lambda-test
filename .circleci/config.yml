@@ -15,8 +15,8 @@ jobs:
     docker:
       - image: cimg/node:16.10
     steps:
-      - run: echo "Run your API tests here"
-          name: Run tests e2e
+      - run:
+          name: run tests e2e
           command: npm run test:e2e
 
 workflows:
