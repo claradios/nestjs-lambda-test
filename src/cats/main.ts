@@ -15,7 +15,7 @@ const express = require('express');
 // due to a compressed response (e.g. gzip) which has not been handled correctly
 // by aws-serverless-express and/or API Gateway. Add the necessary MIME types to
 // binaryMimeTypes below
-const binaryMimeTypes: string[] = [];
+const binaryMimeTypes: string[] = ['text/html'];
 
 let cachedServer: Server;
 
@@ -34,6 +34,6 @@ async function bootstrapServer(): Promise<Server> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  cachedServer = await bootstrapServer();
+  cachedServer = cachedServer ?? (await bootstrapServer());
   return proxy(cachedServer, event, context, 'PROMISE').promise;
 };

@@ -15,7 +15,7 @@ const express = require('express');
 // due to a compressed response (e.g. gzip) which has not been handled correctly
 // by aws-serverless-express and/or API Gateway. Add the necessary MIME types to
 // binaryMimeTypes below
-const binaryMimeTypes: string[] = ['text/html'];
+const binaryMimeTypes: string[] = ['text/html', 'text/css'];
 
 let cachedServer: Server;
 // TODO: make swagger work
@@ -23,6 +23,7 @@ function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
     .setTitle('The Cats and Dogs API')
     .setVersion('1.0.0')
+    .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);
@@ -47,9 +48,11 @@ export const handler: Handler = async (event: any, context: Context) => {
   if (event.path === '/swagger') {
     event.path = '/swagger/';
   }
+  console.log(event.path);
+  event.path = event.path.includes('swagger-ui')
+    ? `/swagger${event.path}`
+    : event.path;
 
-  event.path = event.path.includes('swagger-ui') ? `/swagger/` : event.path;
-
-  cachedServer = await bootstrapServer();
+  cachedServer = cachedServer ?? (await bootstrapServer());
   return proxy(cachedServer, event, context, 'PROMISE').promise;
 };
