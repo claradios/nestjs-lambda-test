@@ -23,9 +23,10 @@ function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
     .setTitle('The Cats API')
     .setVersion('1.0.0')
+    .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('api-cats', app, document);
 }
 
 async function bootstrapServer(): Promise<Server> {
@@ -44,12 +45,12 @@ async function bootstrapServer(): Promise<Server> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  if (event.path === 'cats/swagger') {
+  if (event.path === 'cats/api-cats') {
     event.path = '/swagger/';
   }
 
   event.path = event.path.includes('swagger-ui')
-    ? `/swagger${event.path.replace('/cats', '')}`
+    ? `/api-cats${event.path.replace('/cats', '')}`
     : event.path;
   // PREVIOUS CODE:  https://github.com/nestjs/swagger/issues/199
   cachedServer = await bootstrapServer();

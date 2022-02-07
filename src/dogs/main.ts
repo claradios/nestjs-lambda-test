@@ -23,9 +23,10 @@ function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
     .setTitle('The Dogs API')
     .setVersion('1.0.0')
+    .addTag('dogs')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('api-dogs', app, document);
 }
 
 async function bootstrapServer(): Promise<Server> {
@@ -44,12 +45,12 @@ async function bootstrapServer(): Promise<Server> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  if (event.path === 'dogs/swagger') {
-    event.path = '/swagger/';
+  if (event.path === 'dogs/api-dogs') {
+    event.path = '/api-dogs/';
   }
 
   event.path = event.path.includes('swagger-ui')
-    ? `/swagger${event.path.replace('/dogs', '')}`
+    ? `/api-dogs${event.path.replace('/dogs', '')}`
     : event.path;
 
   cachedServer = await bootstrapServer();
