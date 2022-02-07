@@ -21,13 +21,12 @@ let cachedServer: Server;
 // TODO: make swagger work
 function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
-    .setTitle('My Cats and Dogs API')
+    .setTitle('The Dogs API')
     .setVersion('1.0.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger', app, document);
 }
-
 
 async function bootstrapServer(): Promise<Server> {
   if (!cachedServer) {
@@ -45,14 +44,13 @@ async function bootstrapServer(): Promise<Server> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  if (event.path === '/api') {
-    event.path = '/api/';
+  if (event.path === 'dogs/swagger') {
+    event.path = '/swagger/';
   }
 
   event.path = event.path.includes('swagger-ui')
-    ? `/api${event.path}`
+    ? `/swagger${event.path.replace('/dogs', '')}`
     : event.path;
-  console.log(event.path);
 
   cachedServer = await bootstrapServer();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
