@@ -1,46 +1,55 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
 orbs:
-  # The Node.js orb contains a set of prepackaged CircleCI configuration you can utilize
-  # Orbs reduce the amount of configuration required for common tasks.
-  # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@4.7
-  aws-sam-serverless: circleci/aws-sam-serverless@3.2.0
 
 jobs:
-  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  test-my-api:
+  run-test-e2e:
     docker:
       - image: cimg/node:16.10
     steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
       - run:
-          name: run tests e2e
+          name: Test e2e
           command: npm run test:e2e
+  deploy-lambda:
+    parameters:
+      stage-name:
+        type: string
+    docker:
+      - image: cimg/node:16.10
+        environment:
+          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    steps:
+      - checkout
+      - run:
+          name: Install Serverless CLI
+          command: |
+            sudo npm i -g serverless
+            serverless plugin install -n serverless-plugin-typescript
+            serverless plugin install -n serverless-offline
+            serverless plugin install -n serverless-plugin-optimize
+      - run:
+          name: Deploy with Serverless CLI
+          command: |
+            sls deploy --stage << parameters.stage-name >>
+  approve-pre:
+  approve-pro:
 
 workflows:
-  # Below is the definition of your workflow.
-  # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
-  # CircleCI will run this workflow on every commit.
-  # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
-  test_and_deploy:
+  main:
     jobs:
-      - sam/deploy:
-          context: aws-credentials-context
-          name: deploy-staging
-          s3-bucket: my-s3-bucket
-          stack-name: staging-stack
-          template: ./path/to/template.yml
-      - test-my-api:
+      - run-test-e2e
+      - deploy-lambda:
+          stage-name: dev
           requires:
-            - deploy-staging
-      - sam/deploy:
-          context: aws-credentials-context
-          name: deploy-production
+            - run-test-e2e
+      - approve-pre:
+          type: approval
+      - deploy-lambda:
+          stage-name: pre
           requires:
-            - test-my-api
-          stack-name: production-stack
-          template: ../serverless.yaml
-      # For running simple node tests, you could optionally use the node/test job from the orb to replicate and replace the job above in fewer lines.
-      # - node/test
+            - approve-pre
