@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Deploy with Serverless CLI
           command: |
-            sls deploy --stage << parameters.stage-name >> --aws-profile default
+            sls deploy --stage << parameters.stage-name >> --aws-profile claradios
   approve-pre:
   approve-pro:
 
