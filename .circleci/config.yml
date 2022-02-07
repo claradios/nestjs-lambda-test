@@ -27,8 +27,8 @@ jobs:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
       - run:
-          name: Run tests
-          command: npm test:e2e
+          name: Run tests e2e
+          command: npm run test:e2e
 
 workflows:
   # Below is the definition of your workflow.
