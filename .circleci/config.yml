@@ -20,9 +20,9 @@ jobs:
         type: string
     docker:
       - image: cimg/node:16.10
-        # environment:
-        #   AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-        #   AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+        environment:
+          AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+          AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
     steps:
       - checkout
       - run:
@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Deploy with Serverless CLI
           command: |
-            sls deploy --stage << parameters.stage-name >> --aws-profile claradios
+            sls deploy --stage << parameters.stage-name >>
   approve-pre:
   approve-pro:
 
