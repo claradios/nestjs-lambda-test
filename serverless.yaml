@@ -8,6 +8,7 @@ plugins:
 provider:
  name: aws
  runtime: nodejs12.x
+ profile: default
 
 functions:
  get-cats: # The name of the lambda function
