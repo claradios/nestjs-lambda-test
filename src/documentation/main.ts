@@ -21,7 +21,7 @@ let cachedServer: Server;
 // TODO: make swagger work
 function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
-    .setTitle('The Cats & Dogs API')
+    .setTitle('The Cats & Dogs API.')
     .setVersion('1.0.0')
     .addTag('cats')
     .build();
