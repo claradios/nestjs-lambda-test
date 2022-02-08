@@ -9,6 +9,7 @@ serverless config credentials \
   --key EXAMPLEKEYABCED \
   --secret ExamPleSecret135553abced
 ```
+You can also use the AWS CLI. Credentials wil be found inside .aws/
 
 Run locally command:
 `sls offline start`
@@ -23,3 +24,4 @@ IMPORTANT: after testing remove the deployment to avoid unexpected charges:
 
 * Reference article (first part works well, after that a bit outdated): https://nishabe.medium.com/nestjs-serverless-lambda-aws-in-shortest-steps-e914300faed5
 
+Deployment is managed by [circleci](circleci.com)
