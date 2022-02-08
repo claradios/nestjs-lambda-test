@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class DogsService {
   getHello(): string {
-    return 'Hello World! Welcome to the DOGS service';
+    return 'Hello World!!! Welcome to the DOGS service.';
   }
 
   getAll(): Array<object> {
