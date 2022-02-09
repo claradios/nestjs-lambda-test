@@ -52,7 +52,11 @@ export const handler: Handler = async (event: any, context: Context) => {
   event.path = event.path.includes('swagger-ui')
     ? `/swagger${event.path}`
     : event.path;
-
+  console.log('EVENT PATH', event.path);
   cachedServer = cachedServer ?? (await bootstrapServer());
+  if (event.path === '/swagger/swagger-ui.css') {
+    cachedServer._binaryTypes = ['text/css'];
+  }
+  console.log('CACHED SERVER', cachedServer);
   return proxy(cachedServer, event, context, 'PROMISE').promise;
 };
