@@ -34,6 +34,4 @@ functions:
 
 custom:
   optimize:
-    external: ['swagger-ui-dist']
-    exclude: ['** / *.css']
-    global: true
+    external: ['swagger-ui-dist', 'normalize.css']

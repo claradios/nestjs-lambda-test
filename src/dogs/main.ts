@@ -12,7 +12,7 @@ const express = require('express');
 // due to a compressed response (e.g. gzip) which has not been handled correctly
 // by aws-serverless-express and/or API Gateway. Add the necessary MIME types to
 // binaryMimeTypes below
-const binaryMimeTypes: string[] = ['text/html'];
+const binaryMimeTypes: string[] = [];
 
 let cachedServer: Server;
 
