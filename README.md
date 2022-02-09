@@ -28,4 +28,6 @@ IMPORTANT: after testing remove the deployment to avoid unexpected charges:
 
 Deployment is managed by [circleci](circleci.com)
 
+test minify false
+
 

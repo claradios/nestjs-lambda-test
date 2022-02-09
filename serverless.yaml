@@ -23,7 +23,6 @@ functions:
      - http:
          method: any
          path: /cats/{any+}
-
  get-dogs: # The name of the lambda function
    # The module 'handler' is exported in the file 'src/dogs/main'
    handler: src/dogs/main.handler
@@ -35,4 +34,4 @@ functions:
 custom:
   optimize:
     external: ['swagger-ui-dist']
-    extensions: ['.css']
+    minify: false
