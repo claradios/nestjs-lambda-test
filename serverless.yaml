@@ -33,5 +33,5 @@ functions:
 
 custom:
   optimize:
-    external: ['swagger-ui-dist']
+    external: ['swagger-ui-express']
     minify: false
