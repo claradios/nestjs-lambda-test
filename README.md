@@ -27,7 +27,3 @@ IMPORTANT: after testing remove the deployment to avoid unexpected charges:
 * Reference article (first part works well, after that a bit outdated): https://nishabe.medium.com/nestjs-serverless-lambda-aws-in-shortest-steps-e914300faed5
 
 Deployment is managed by [circleci](circleci.com)
-
-test minify false
-
-
